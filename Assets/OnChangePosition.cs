@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class OnChangePosition : MonoBehaviour
 {
@@ -10,6 +11,29 @@ public class OnChangePosition : MonoBehaviour
     public Collider GroundColider;
     public float initialScale = 0.5f;
     Mesh GeneratedMesh;
+
+    public void Move(BaseEventData myEvent)
+    {
+        if(((PointerEventData)myEvent).pointerCurrentRaycast.isValid)
+        {
+            transform.position = ((PointerEventData)myEvent).pointerCurrentRaycast.worldPosition;
+        }
+    }
+
+    public IEnumerator ScaleHole()
+    {
+        Vector3 StartScale = transform.localScale;
+        Vector3 EndScale = StartScale * 2;
+
+        float t = 0;
+        while(t<=0.4f)
+        {
+            t += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(StartScale, EndScale, t);
+            yield return null;
+        }
+    }
+
     private void Start()
     {
         GameObject[] AllGOs = FindObjectsOfType(typeof(GameObject)) as GameObject[];
